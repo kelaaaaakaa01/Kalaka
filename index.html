@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f5f0e7">
+  <title>NOVA BUILDER — Vercel HTML Builder</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="paper">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">N</div>
+        <div><b>NOVA</b><span>BUILDER</span></div>
+      </div>
+      <div class="rule"></div>
+      <nav>
+        <button class="nav active" data-page="dashboard">Dashboard</button>
+        <button class="nav" data-page="builder">Builder</button>
+        <button class="nav" data-page="deploy">Deploy</button>
+        <button class="nav" data-page="projects">Projects</button>
+        <button class="nav" data-page="docs">Documentation</button>
+        <button class="nav" data-page="settings">Settings</button>
+      </nav>
+      <div class="side-note">
+        <small>NOVA / 01</small>
+        <p>Static HTML deployment workspace for Vercel.</p>
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div>
+          <span class="eyebrow">NOVA BUILDER / WEB DEPLOYMENT WORKSPACE</span>
+          <h1 id="pageTitle">Dashboard</h1>
+        </div>
+        <div class="status"><i></i><span id="statusText">Ready</span></div>
+      </header>
+
+      <section id="dashboard" class="page active">
+        <div class="hero">
+          <div>
+            <span class="eyebrow">A clean publishing desk</span>
+            <h2>Build. Package.<br><em>Deploy.</em></h2>
+            <p>Workspace ringan untuk menyiapkan file HTML/CSS/JS dan menerbitkannya ke Vercel melalui server-side API.</p>
+            <button class="ink-btn" data-go="builder">Open Builder</button>
+          </div>
+          <div class="paper-card specimen">
+            <span>PROJECT NOTE</span>
+            <strong>NOVA BUILDER</strong>
+            <p>Designed for mobile WebView workflows, including Sketchware.</p>
+            <div class="stamp">NB / 26</div>
+          </div>
+        </div>
+        <div class="grid three">
+          <article class="card"><span class="num">01</span><h3>Compose</h3><p>Tulis atau masukkan HTML, CSS, dan JavaScript.</p></article>
+          <article class="card"><span class="num">02</span><h3>Package</h3><p>Validasi file dan susun struktur website sebelum deploy.</p></article>
+          <article class="card"><span class="num">03</span><h3>Publish</h3><p>Kirim paket melalui API internal yang menyimpan token di server.</p></article>
+        </div>
+      </section>
+
+      <section id="builder" class="page">
+        <div class="section-head"><div><span class="eyebrow">WORKSPACE</span><h2>Builder</h2></div><button class="ghost" id="loadDemo">Load demo</button></div>
+        <div class="editor-grid">
+          <div class="editor-card">
+            <label>index.html</label>
+            <textarea id="htmlCode" spellcheck="false" placeholder="Paste HTML di sini..."></textarea>
+          </div>
+          <div class="editor-card">
+            <label>style.css</label>
+            <textarea id="cssCode" spellcheck="false" placeholder="Paste CSS di sini..."></textarea>
+          </div>
+          <div class="editor-card">
+            <label>script.js</label>
+            <textarea id="jsCode" spellcheck="false" placeholder="Paste JavaScript di sini..."></textarea>
+          </div>
+        </div>
+        <div class="builder-actions">
+          <button class="ink-btn" id="previewBtn">Preview</button>
+          <button class="outline-btn" id="sendDeploy">Use in Deploy</button>
+          <button class="ghost" id="clearBtn">Clear</button>
+        </div>
+        <div id="previewWrap" class="preview-wrap hidden">
+          <div class="preview-head"><span>LOCAL PREVIEW</span><button class="ghost" id="closePreview">Close</button></div>
+          <iframe id="preview"></iframe>
+        </div>
+      </section>
+
+      <section id="deploy" class="page">
+        <div class="section-head"><div><span class="eyebrow">VERCEL PUBLISHING</span><h2>Deploy</h2></div></div>
+        <div class="deploy-grid">
+          <div class="card form-card">
+            <label>Project name</label>
+            <input id="projectName" value="nova-site" maxlength="80" placeholder="nova-site">
+            <label>Deployment target</label>
+            <select id="target"><option value="production">Production</option><option value="preview">Preview</option></select>
+            <label>HTML file</label>
+            <input id="htmlFile" type="file" accept=".html,.htm,text/html">
+            <label>CSS file <small>optional</small></label>
+            <input id="cssFile" type="file" accept=".css,text/css">
+            <label>JavaScript file <small>optional</small></label>
+            <input id="jsFile" type="file" accept=".js,text/javascript,application/javascript">
+            <label>Additional files <small>optional</small></label>
+            <input id="extraFiles" type="file" multiple>
+            <div class="tip">Untuk proyek sederhana, pilih index.html. Untuk aset tambahan, pilih beberapa file sekaligus jika WebView mengizinkannya.</div>
+            <button class="ink-btn full" id="deployBtn">Deploy to Vercel</button>
+          </div>
+          <div class="card log-card">
+            <div class="log-head"><span>DEPLOY LOG</span><span id="logState">IDLE</span></div>
+            <pre id="log">NOVA BUILDER initialized.
+Waiting for deployment input...</pre>
+            <div id="result" class="result hidden"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="projects" class="page">
+        <div class="section-head"><div><span class="eyebrow">LOCAL RECORD</span><h2>Projects</h2></div><button class="ghost" id="clearProjects">Clear records</button></div>
+        <div id="projectList" class="project-list"></div>
+      </section>
+
+      <section id="docs" class="page">
+        <div class="section-head"><div><span class="eyebrow">REFERENCE</span><h2>Documentation</h2></div></div>
+        <div class="doc-grid">
+          <article class="card"><span class="num">01</span><h3>How it works</h3><p>NOVA BUILDER mengirim isi file ke endpoint <code>/api/deploy</code>. Endpoint tersebut berjalan sebagai Vercel Function dan menggunakan secret environment variable <code>VERCEL_TOKEN</code>.</p></article>
+          <article class="card"><span class="num">02</span><h3>Why server-side token</h3><p>Jangan menaruh Vercel token langsung di HTML/JavaScript WebView. Token di browser dapat terlihat oleh pengguna lain dan berisiko disalahgunakan.</p></article>
+          <article class="card"><span class="num">03</span><h3>Project name</h3><p>Nama proyek Vercel harus lowercase dan hanya memakai huruf, angka, titik, underscore, atau tanda minus.</p></article>
+          <article class="card"><span class="num">04</span><h3>Sketchware WebView</h3><p>Load URL NOVA BUILDER pada WebView. Pastikan WebView mengizinkan JavaScript dan file chooser jika ingin memakai pemilih file.</p></article>
+          <article class="card wide"><span class="num">05</span><h3>First setup</h3><ol><li>Deploy folder NOVA BUILDER ke akun Vercel.</li><li>Di Project Settings → Environment Variables, buat <code>VERCEL_TOKEN</code>.</li><li>Masukkan Access Token Vercel sebagai nilainya.</li><li>Redeploy NOVA BUILDER setelah variable tersedia.</li><li>Buka NOVA BUILDER dari WebView Sketchware.</li></ol></article>
+          <article class="card wide"><span class="num">06</span><h3>Supported workflow</h3><p>Versi ini fokus pada static HTML/CSS/JS. Untuk framework seperti Next.js, gunakan Git/CLI/Vercel Drop atau workflow build khusus karena proyek framework memerlukan proses build.</p></article>
+        </div>
+      </section>
+
+      <section id="settings" class="page">
+        <div class="section-head"><div><span class="eyebrow">APPLICATION</span><h2>Settings</h2></div></div>
+        <div class="settings-list">
+          <div class="setting"><div><b>Theme</b><p>Paper / Editorial</p></div><span>ACTIVE</span></div>
+          <div class="setting"><div><b>Storage</b><p>Project history tersimpan lokal di browser/WebView.</p></div><button class="ghost" id="wipeStorage">Reset</button></div>
+          <div class="setting"><div><b>API endpoint</b><p><code>/api/deploy</code></p></div><span>SERVER</span></div>
+        </div>
+        <div class="warning">Security note: jangan pernah meminta pengguna memasukkan Vercel token ke frontend. Secret hanya disimpan pada Environment Variables Vercel.</div>
+      </section>
+    </main>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>
